@@ -67,6 +67,9 @@ def startup(): # program to run, could be in a while true loop for repeated
     else:
         startup()
     print("Set Data:\nMax:" + str(maximum) + "\nMin:" + str(minimum))
-
-os.system('cls' if os.name == 'nt' else 'clear') # way to clear terminal/console text
-startup()
+    x = input('Press enter to start again or exit to exit.').lower()
+    if x == "exit":
+        sys.exit(0)
+while True:
+    os.system('cls' if os.name == 'nt' else 'clear') # way to clear terminal/console text
+    startup()   
