@@ -22,8 +22,10 @@ def startup(): # program to run, could be in a while true loop for repeated
     if selectfile:
         print(str(selectfile))
     else:
-        print("No File was Selected")
-        sys.exit(0)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("No file selected")
+        time.sleep(3) # wait 3 seconds before returning so error message can be read
+        return
     title = str(selectfile)
     with open(selectfile, 'r') as file: # open and read the file and turn into variable file
         reader = csv.reader(file) # READER is a list of rows
@@ -36,7 +38,7 @@ def startup(): # program to run, could be in a while true loop for repeated
             # If this goes through, it's a number. Put it in the list
             # this is a float to accept decimal values as well
             xaxis.append(header[0])
-            yaxis.append(header[1])
+            yaxis.append(float(header[1]))
             x_label = "X Axis"
             y_label = "Y Axis"
         except ValueError: # if first part fails
@@ -47,10 +49,19 @@ def startup(): # program to run, could be in a while true loop for repeated
         # Loop through the remaining rows
         for row in reader: 
             xaxis.append(row[0]) 
-            yaxis.append(row[1])
+            try:
+                yaxis.append(float(row[1]))
+            except ValueError: # if its a text
+                print("This file is not supported")
+                print ("Error: Y-Value Text")
+                return # ends the function
+            
         maximum = max(yaxis) # maximum of y, int data type here
         minimum = min(yaxis) # minimum of y, also a int var
-
+    print("--- Reviewing Extracted Variables ---")
+    for x_val, y_val in zip(xaxis, yaxis): # zip() combines xaxis yaxis to a list of tuples, which can be like coordinates
+        print(f"({x_val}, {y_val})") # f"" with the {} is a cleaner way to write out variables as strings
+    print("-------------------------------------\n")
     graphtype = input('What graph type would you like? [Bar | Line]\n').lower() 
     if graphtype == "bar":
         print("Making your graph...")
@@ -65,11 +76,11 @@ def startup(): # program to run, could be in a while true loop for repeated
         graph.update_layout(template="plotly_white")
         graph.show()
     else:
-        startup()
+        return
     print("Set Data:\nMax:" + str(maximum) + "\nMin:" + str(minimum))
-    x = input('Press enter to start again or exit to exit.').lower()
-    if x == "exit":
+    loopprompt = input('Press enter to start again or exit to exit.\n').lower()
+    if loopprompt == "exit":
         sys.exit(0)
-while True:
+while True: # program loop
     os.system('cls' if os.name == 'nt' else 'clear') # way to clear terminal/console text
     startup()   
